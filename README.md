@@ -9,3 +9,47 @@ The `client_async_member_function` recipe is analog to `client_async` but sends 
 source ./install/setup.bash
 ros2 run lidar_client client
 ```
+## (For windows) Bind usbport to wsl
+
+Run cmd with administrator mode.
+
+``` shell
+
+usbipd list
+```
+
+![alt text](image.png)
+
+``` shell
+usbipd bind --busid 2-1
+usbipd attach --wsl --busid 2-1
+```
+
+## Run ydlidar_ros2_driver
+
+##### Run ydlidar_ros2_driver using launch file
+
+The command format is : 
+
+ `ros2 launch ydlidar_ros2_driver [launch file].py`
+
+1. Connect LiDAR uint(s).
+   ```
+   ros2 launch ydlidar_ros2_driver ydlidar_launch.py 
+   ```
+   or 
+
+   ```
+   launch $(ros2 pkg prefix ydlidar_ros2_driver)/share/ydlidar_ros2_driver/launch/ydlidar.py 
+   ```
+2. RVIZ 
+   ```
+   ros2 launch ydlidar_ros2_driver ydlidar_launch_view.py 
+   ```
+    ![View](images/view.png  "View")
+
+3. echo scan topic
+   ```
+   ros2 run ydlidar_ros2_driver ydlidar_ros2_driver_client #or ros2 topic echo /scan
+   ros2 run ydlidar_ros2_driver ydlidar_ros2_driver_clientpy
+   ```

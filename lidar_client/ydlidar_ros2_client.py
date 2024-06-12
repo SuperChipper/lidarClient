@@ -28,13 +28,15 @@ class YDLidarROS2DriverClient(Node):
         #self.get_logger().info(f'I heard a laser scan {scan.header.frame_id}[{count}]:')
         #self.get_logger().info(f'angle_range : [{RAD2DEG(scan.angle_min)}, {RAD2DEG(scan.angle_max)}]')
 
-        pick_num=int(scan.angle_min+len(scan.ranges)*real_pose_2d/360)%len(scan.ranges)
+        pick_num=int(len(scan.ranges)*180/360)#%len(scan.ranges)RAD2DEG(scan.angle_min)
         
         if pick_num<4 or pick_num>len(scan.ranges)-4:
-            window=np.array(scan.ranges[pick_num-2:]+scan.ranges[0:(pick_num+2)%len(scan.ranges)])
+            window=np.array([n for n in (scan.ranges[pick_num-2:]+scan.ranges[0:(pick_num+2)%len(scan.ranges)]) if n!=0])
         else:
-            window=np.array(scan.ranges[pick_num-2:pick_num+2])
-        print('\r'+str(RAD2DEG(pick_num))+','+str(scan.ranges[pick_num])+','+str(len(scan.ranges))+','+str(np.mean(window)),end='')
+            #window=np.array(scan.ranges[pick_num-2:pick_num+2])
+            window=np.array([scan.ranges[i] for i in range(pick_num-2,pick_num+2) if scan.ranges[i]!=0])
+
+        print('\r'+str(pick_num)+','+str(scan.ranges[pick_num])+','+str(len(scan.ranges))+','+str(np.mean(window)),end='')
 
 class Subscriber_RealPath(Node):
     def __init__(self):
